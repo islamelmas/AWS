@@ -95,20 +95,22 @@ resource "aws_instance" "example" {
   ami           = "ami-066333d9c572b0680"
   instance_type = "t2.micro"
   subnet_id= aws_subnet.public-subnet.id
-  vpc_security_group_ids=[aws_security_group.sg-1.id]
+  vpc_security_group_ids=[aws_security_group.sg-1.id] 
   associate_public_ip_address= true
   key_name= "keypair"
-  user_data= <<EOF
-                 #!/bin/bash
-                 sudo yum update -y && sudo yum install -y docker
-                 sudo systemctl start docker
-                 sudo usermod -aG docker ec2-user
-                 docker run -p 8080:80 nginx 
-
-
-
-             EOF 
+ 
   tags = {
     Name = "${var.env_prefix}-server"
   }
+
+  user_data= <<EOF
+              #!/bin/bash
+              sudo yum update -y && sudo yum install -y docker
+              sudo systemctl start docker
+              sudo usermod -aG docker ec2-user
+              docker run -p 8080:80 nginx 
+
+
+
+            EOF 
 }
